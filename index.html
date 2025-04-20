@@ -1,40 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Rock Paper Scissors Game</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <h1>Rock paper Scissors Game</h1>
-     <div class="choices">
-        <div class="choice" id="rock" >
-            <img src="./images/rock.png" alt="Rock"  >
+    <h1>Rock Paper Scissors Game</h1>
+
+    <!-- Dark Mode Toggle Button -->
+    <div class="theme-toggle">
+        <button id="toggleDarkMode" class="dark-mode-btn">Toggle Dark Mode</button>
+    </div>
+
+    <!-- Game Choices -->
+    <div class="choices">
+        <div class="choice" id="rock">
+            <img src="./images/rock.png" alt="Rock" />
         </div>
         <div class="choice" id="paper">
-            <img src="./images/paper1.png" alt="Paper" >
+            <img src="./images/paper1.png" alt="Paper" />
         </div>
-        <div class="choice"  id="scissors">
-            <img src="./images/scissors.png" alt="Scissors">
-        </div>
-     </div>
-    <div class="score-board">
-        <div class="user-score">
-         <p id="user-score">0</p>
-         <p>player</p>
-        </div>
-        <div class="computer-score">
-         <p id="comp-score">0</p>
-         <p>computer</p>
+        <div class="choice" id="scissors">
+            <img src="./images/scissors.png" alt="Scissors" />
         </div>
     </div>
+
+    <!-- Scoreboard -->
+    <div class="score-board">
+        <div class="user-score">
+            <p id="user-score">0</p>
+            <p>Player</p>
+        </div>
+        <div class="computer-score">
+            <p id="comp-score">0</p>
+            <p>Computer</p>
+        </div>
+    </div>
+
+    <!-- Message -->
     <div class="msg-container">
         <p id="msg">Make your move</p>
     </div>
-    <div class="btn-container">
-        <button id="reset">🔄 Reset Game</button>
-    </div>    
+
+    <!-- Modal -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>🎮 Game Over</h2>
+            <p id="modal-message"></p>
+            <button id="play-again" class="glow-btn">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Sound Elements -->
+    <audio id="clickSound" src="./sounds/click.wav"></audio>
+    <audio id="winSound" src="./sounds/win.wav"></audio>
+    <audio id="loseSound" src="./sounds/lose.wav"></audio>
+    <audio id="drawSound" src="./sounds/draw.wav"></audio>
+    <audio id="gameOverSound" src="./sounds/gameOver.wav"></audio>
 
     <script src="script.js"></script>
 </body>

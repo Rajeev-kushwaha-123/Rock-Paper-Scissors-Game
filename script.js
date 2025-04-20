@@ -1,78 +1,117 @@
 let userScore = 0;
 let compScore = 0;
-const choices=document.querySelectorAll('.choice');
-const msg = document.querySelector('#msg');
+let roundCount = 0;
+const maxRounds = 5;
 
-const userScorePara= document.querySelector('#user-score');
-const compScorePara= document.querySelector('#comp-score');
+const choices = document.querySelectorAll(".choice");
+const msg = document.querySelector("#msg");
+const userScorePara = document.querySelector("#user-score");
+const compScorePara = document.querySelector("#comp-score");
 
-const genCompChoice = ()=>{
-    //rock paper scissors
-    const option=["rock","paper","scissors"];
-    //1 for rock, 2 for paper, 3 for scissors
-    const randIdx = Math.floor(Math.random()*3);
-    return option[randIdx];
-}
-const drawGame = ()=>{
-    console.log("It's a draw!");
-    msg.innerHTML = `It's a draw! play again`;
+const modal = document.getElementById("gameOverModal");
+const modalMsg = document.getElementById("modal-message");
+const closeBtn = document.querySelector(".close");
+const playAgainBtn = document.getElementById("play-again");
+
+// Sounds
+const clickSound = document.getElementById("clickSound");
+const winSound = document.getElementById("winSound");
+const loseSound = document.getElementById("loseSound");
+const drawSound = document.getElementById("drawSound");
+const gameOverSound = document.getElementById("gameOverSound");
+
+const playSound = (sound) => sound.play();
+
+const genCompChoice = () => {
+    const options = ["rock", "paper", "scissors"];
+    return options[Math.floor(Math.random() * options.length)];
+};
+
+const drawGame = () => {
+    msg.textContent = "It's a draw! Play again.";
     msg.style.backgroundColor = "#8B8000";
-}
-const playGame = (userChoice)=>{
-    console.log("User value = ",userChoice);
-    //generate computer choice
+    playSound(drawSound);
+};
+
+const showModal = () => {
+    let resultText = userScore > compScore ? "🎉 You won the game!" :
+                     compScore > userScore ? "💻 Computer won the game!" :
+                     "🤝 It's a tie!";
+    modalMsg.textContent = resultText;
+    modal.style.display = "block";
+    playSound(gameOverSound);
+};
+
+const resetGame = () => {
+    userScore = 0;
+    compScore = 0;
+    roundCount = 0;
+    userScorePara.textContent = 0;
+    compScorePara.textContent = 0;
+    msg.textContent = "Make your move";
+    msg.style.backgroundColor = "#081b31";
+    modal.style.display = "none";
+};
+
+const playGame = (userChoice) => {
+    if (roundCount >= maxRounds) return;
+    playSound(clickSound);
+
     const compChoice = genCompChoice();
-    console.log("computer choice = ",compChoice);
-    //compare user choice and computer choice   
-    if(userChoice === compChoice){
+
+    if (userChoice === compChoice) {
         drawGame();
-    }
-    else if(userChoice === "rock" && compChoice === "scissors"){
+    } else if (
+        (userChoice === "rock" && compChoice === "scissors") ||
+        (userChoice === "paper" && compChoice === "rock") ||
+        (userChoice === "scissors" && compChoice === "paper")
+    ) {
         userScore++;
-        console.log("User wins!");
-        msg.innerHTML = `User wins! ${userChoice} beats ${compChoice}`;
+        msg.textContent = `You win! ${userChoice} beats ${compChoice}`;
         msg.style.backgroundColor = "green";
-    }
-    else if(userChoice === "paper" && compChoice === "rock"){
-        userScore++;
-        console.log("User wins!");
-        msg.innerHTML = `User wins! ${userChoice} beats ${compChoice}`;
-        msg.style.backgroundColor = "green";
-    }
-    else if(userChoice === "scissors" && compChoice === "paper"){
-        userScore++;
-        console.log("User wins!");
-        msg.innerHTML = `User wins! ${userChoice} beats ${compChoice}`;
-        msg.style.backgroundColor = "green";
-    }
-    else{
+        playSound(winSound);
+    } else {
         compScore++;
-        console.log("Computer wins!");
-        msg.innerHTML = `Computer wins! ${compChoice} beats ${userChoice}`;
+        msg.textContent = `Computer wins! ${compChoice} beats ${userChoice}`;
         msg.style.backgroundColor = "red";
+        playSound(loseSound);
     }
-    //update score
-    userScorePara.innerHTML = userScore;
-    compScorePara.innerHTML = compScore;
-    console.log("User score = ",userScore);
-    console.log("Computer score = ",compScore);  
+
+    userScorePara.textContent = userScore;
+    compScorePara.textContent = compScore;
+    roundCount++;
+
+    if (roundCount === maxRounds) {
+        setTimeout(showModal, 800);
+    }
+};
+
+// Dark Mode Toggle
+const darkModeBtn = document.getElementById("toggleDarkMode");
+
+// Check if dark mode was previously enabled
+if (localStorage.getItem("darkMode") === "enabled") {
+    document.body.classList.add("dark-mode");
 }
-choices.forEach(
-   (choice)=>{
-    choice.addEventListener('click', ()=>{
+
+// Toggle dark mode
+darkModeBtn.addEventListener("click", () => {
+    if (document.body.classList.contains("dark-mode")) {
+        document.body.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "disabled");
+    } else {
+        document.body.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "enabled");
+    }
+});
+
+// Events
+choices.forEach(choice => {
+    choice.addEventListener("click", () => {
         const userChoice = choice.getAttribute("id");
         playGame(userChoice);
     });
-
-   })
-
-//reset game
-document.querySelector("#reset").addEventListener("click", () => {
-    userScore = 0;
-    compScore = 0;
-    userScorePara.innerHTML = 0;
-    compScorePara.innerHTML = 0;
-    msg.innerHTML = "Make your move";
-    msg.style.backgroundColor = "#081b31";
 });
 
+closeBtn.onclick = () => modal.style.display = "none";
+playAgainBtn.onclick = resetGame;
